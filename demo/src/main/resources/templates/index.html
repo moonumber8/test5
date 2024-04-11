@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>ชื่อพนักงาน</title>
+</head>
+<body>
+<h1>ชื่อพนักงาน</h1>
+<form>
+    <table>
+        <thead>
+        <tr>
+            <th>ชื่อ</th>
+            <th>รหัสพนักงาน</th>
+            <th>ตำแหน่ง</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><input type="text" id="EmpName"/></td>
+            <td><input type="text" id="EmpNum"/></td>
+            <td>
+                <select id="Position" >
+                    <option th:each="position : ${position}" th:value="${position.key}" th:text="${position.value}"></option>
+                </select>
+            </td>
+            <td><button type="button" id="btn_save">บันทึก</button></td>
+        </tr>
+        </tbody>
+    </table>
+</form>
+</body>
+</html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $("#btn_save").on('click', function(){
+            var n = 0;
+            $("input").each(function() {
+                
+                if ($(this).val() === null || $(this).val() === "") {
+                    var id = $(this).attr("id");
+                    if(id == "EmpName"){
+                        n++;
+                        alert("คุณยังไม่ได้กรอกชื่อพนักงาน");
+                    }else if (id == "EmpNum"){
+                        n++;
+                        alert("คุณยังไม่ได้กรอกรหัสพนักงาน");
+                    }else if (id == "Position"){
+                        n++;
+                        alert("คุณยังไม่ได้กรอกรหัสพนักงาน");
+                    }      
+                }
+            });
+           
+            if(n == 0){
+                let Position = $('#Position').find(":selected").val();
+                let EmpName = $('#EmpName').val();
+                let EmpNum = $('#EmpNum').val();
+                var req = { Position: Position, EmpName:EmpName, EmpNum:EmpNum };
+                $.ajax({
+                    url: "/saveData",
+                    type: "POST",
+                    dataType: "json",
+                    contentType: 'application/json; charset=utf-8',
+                    data: req,
+                    success: function(response) {
+                        console.log("Data saved successfully:", response);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error saving data:", error);
+                    }
+                });
+            }
+
+
+        });
+    });
+</script>
+
